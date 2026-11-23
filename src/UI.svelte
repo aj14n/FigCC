@@ -4,6 +4,7 @@
   import { tick } from 'svelte';
   import Header, { type Tab } from './components/Header.svelte';
   import History from './components/History.svelte';
+  import GatewayTasks from './components/GatewayTasks.svelte';
   import Settings from './components/Settings.svelte';
   import Skills, { type Skill } from './components/Skills.svelte';
   import ChatMessage from './components/ChatMessage.svelte';
@@ -681,9 +682,9 @@
     selectionExcluded = true;
   }
 
-  function requestFreshSelectionContext(): Promise<SelectionContext | null> {
+  function requestFreshSelectionContext(allowCached = true): Promise<SelectionContext | null> {
     const requestId = makeId();
-    const fallback = activeSelectionContext ? cloneSelectionContext(activeSelectionContext) : null;
+    const fallback = allowCached && activeSelectionContext ? cloneSelectionContext(activeSelectionContext) : null;
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         pendingSelectionRequests.delete(requestId);
@@ -1384,6 +1385,8 @@
       onChooseWorkspace={chooseWorkspace}
       onClearWorkspace={clearWorkspace}
     />
+  {:else if activeTab === 'tasks'}
+    <GatewayTasks selection={activeSelectionContext} capture={() => requestFreshSelectionContext(false)} />
   {:else if activeTab === 'skills'}
     <Skills
       skills={allSkills}

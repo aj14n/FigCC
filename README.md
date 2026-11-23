@@ -44,6 +44,8 @@ Compared with the upstream FigClaw project, FigCC currently includes:
 
 ## Architecture
 
+In a development build, **Tasks** connects to a compatible local task gateway at `http://127.0.0.1:4320`. Enter its bearer credential, select one layer, paste its Figma selection link, and send an instruction. Reconnect with the same credential to recover your tasks. The gateway determines whether the executor simulates an edit or changes a file.
+
 ```text
 Figma plugin UI
     ⇅ authenticated WebSocket (ws://localhost:4319/ws)

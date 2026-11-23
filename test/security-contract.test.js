@@ -15,7 +15,7 @@ test('pairing settings send plain provider preferences across the iframe boundar
 test('manifest allows only the documentation host and loopback bridge', async () => {
   const manifest = JSON.parse(await readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.networkAccess.allowedDomains, ['https://raw.githubusercontent.com']);
-  assert.deepEqual(manifest.networkAccess.devAllowedDomains, ['ws://localhost:4319']);
+  assert.deepEqual(manifest.networkAccess.devAllowedDomains, ['ws://localhost:4319', 'http://127.0.0.1:4320']);
   assert.ok(!JSON.stringify(manifest).includes('*'));
 });
 

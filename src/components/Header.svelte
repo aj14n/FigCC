@@ -3,7 +3,7 @@
   import Icon from './Icon.svelte';
   import logoUrl from '../assets/figcc-logo.svg';
 
-  export type Tab = 'chat' | 'skills' | 'settings' | 'history';
+  export type Tab = 'chat' | 'skills' | 'settings' | 'history' | 'tasks';
 
   let {
     activeTab = $bindable<Tab>('chat'),
@@ -51,6 +51,7 @@
     </div>
   </div>
   <nav class="tabs-shell" aria-label="FigCC sections">
+    <button class="tab-btn" class:active={activeTab === 'tasks'} aria-current={activeTab === 'tasks' ? 'page' : undefined} onclick={() => (activeTab = 'tasks')}>Tasks</button>
     <button class="tab-btn" class:active={activeTab === 'chat'} aria-current={activeTab === 'chat' ? 'page' : undefined} onclick={() => (activeTab = 'chat')}>Chat</button>
     <button class="tab-btn" class:active={activeTab === 'skills'} aria-current={activeTab === 'skills' ? 'page' : undefined} onclick={() => (activeTab = 'skills')}>Skills</button>
     <button class="tab-btn" class:active={activeTab === 'history'} aria-current={activeTab === 'history' ? 'page' : undefined} onclick={() => (activeTab = 'history')}>History</button>
