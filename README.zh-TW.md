@@ -102,7 +102,7 @@ npm run bridge:token
 3. 選取本專案的 `public/manifest.json`。
 4. 開啟 FigCC → **Settings**。
 5. Bridge URL 保持 `http://localhost:4319`。
-6. 貼上 `npm run bridge:token` 顯示的 token，按 **Save & Connect**。
+6. 貼上本機 pairing token，按 **Save & Connect**。Bridge 狀態會顯示 **Connected**，下次開啟外掛時會沿用這次配對。
 7. 若要連動既有專案與其中的 `skills/`，可到 **Project workspace → Choose folder…** 選擇資料夾。
 8. 等待顯示 **Connected**，回到 **Chat**。
 

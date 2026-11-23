@@ -597,7 +597,7 @@
   function saveBridgeSettings() {
     sendToPlugin({
       type: 'save-settings',
-      settings: { bridgeUrl, bridgeToken, provider, runtimes: runtimePreferences },
+      settings: { bridgeUrl, bridgeToken, provider, runtimes: $state.snapshot(runtimePreferences) },
     });
   }
 

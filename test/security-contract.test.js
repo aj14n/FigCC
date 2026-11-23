@@ -7,6 +7,11 @@ import { mcpDisableConfig } from '../bridge/codex-app-server.js';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
+test('pairing settings send plain provider preferences across the iframe boundary', async () => {
+  const ui = await readFile(path.join(root, 'src', 'UI.svelte'), 'utf8');
+  assert.match(ui, /type: 'save-settings',\s*settings: \{[^}]*runtimes: \$state\.snapshot\(runtimePreferences\)/);
+});
+
 test('manifest allows only the documentation host and loopback bridge', async () => {
   const manifest = JSON.parse(await readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.networkAccess.allowedDomains, ['https://raw.githubusercontent.com']);

@@ -102,7 +102,7 @@ Then import the plugin:
 3. Select `public/manifest.json` from this repository.
 4. Open FigCC → **Settings**.
 5. Leave the URL as `http://localhost:4319`.
-6. Paste the value printed by `npm run bridge:token` and choose **Save & Connect**.
+6. Paste the local pairing token and choose **Save & Connect**. The bridge status changes to **Connected** and the plugin remembers the pairing when reopened.
 7. Optionally choose **Project workspace → Choose folder…** to link an existing project and its `skills/` folder.
 8. Wait for **Connected**, then return to **Chat**.
 
