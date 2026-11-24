@@ -5,6 +5,7 @@
   import Header, { type Tab } from './components/Header.svelte';
   import History from './components/History.svelte';
   import GatewayTasks from './components/GatewayTasks.svelte';
+  import { makeId } from './utils';
   import Settings from './components/Settings.svelte';
   import Skills, { type Skill } from './components/Skills.svelte';
   import ChatMessage from './components/ChatMessage.svelte';
@@ -95,13 +96,6 @@
   const MAX_PROVIDER_ATTACHMENT_BYTES = 26 * 1024 * 1024;
 
   // ─── Helpers (defined early so $state initializers can use them) ──────────
-  function makeId(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = (Math.random() * 16) | 0;
-      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-    });
-  }
-
   function dataUrlByteLength(dataUrl: string): number {
     const encoded = String(dataUrl || '').split(',', 2)[1] || '';
     if (!encoded) return 0;

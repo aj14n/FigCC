@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
+  import { makeId } from '../utils';
   import { applyEvents, GatewayClient, selectionTarget, type GatewayTask, type GatewayInput } from '../gateway-client';
   import type { SelectionContext } from './Composer.svelte';
 
@@ -66,7 +67,7 @@
         const context = await capture();
         if (generation !== gen) return;
         const target = selectionTarget(selectedLink,context?.nodes.map(n=>n.id) ?? []);
-        pending = {requestId: crypto.randomUUID(), prompt:text, target, ...(sessionId ? {sessionId} : {}),
+        pending = {requestId: makeId(), prompt:text, target, ...(sessionId ? {sessionId} : {}),
           ...(doc ? {documentUrl:doc} : {}), ...(rule ? {skill:rule} : {})};
       }
       const task = await api.submit(pending);

@@ -1,10 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
 const source = await readFile(new URL('../src/gateway-client.ts',import.meta.url),'utf8');
 const js = ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ES2022}}).outputText;
 const { GatewayClient, selectionTarget, applyEvents } = await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'));
+
+test('client IDs remain distinct UUIDs in plugin frames without randomUUID', async () => {
+  const source = await readFile(new URL('../src/utils.ts', import.meta.url), 'utf8');
+  const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
+  for (const crypto of [{}, undefined]) {
+    const frame = { exports: {}, crypto };
+    runInNewContext(outputText, frame);
+    const ids = Array.from({ length: 64 }, () => frame.exports.makeId());
+    assert.equal(new Set(ids).size, ids.length);
+    for (const id of ids) assert.match(id, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  }
+});
 
 test('a submitted task retains the explicitly bound file and selected node across selection changes and retries',async()=>{
   const selected=['1:2'];
