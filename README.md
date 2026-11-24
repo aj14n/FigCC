@@ -44,7 +44,7 @@ Compared with the upstream FigClaw project, FigCC currently includes:
 
 ## Architecture
 
-In a development build, **Tasks** connects to a compatible local task gateway at `http://localhost:4320`. Enter its bearer credential, select one layer, paste its Figma selection link, and send an instruction. Reconnect with the same credential to recover your tasks. The gateway determines whether the executor simulates an edit or changes a file.
+In a development build, **Tasks** connects to a compatible local task gateway at `http://localhost:4320`. Connect, select one layer, and send an instruction. The development manifest enables Figma's private plugin API to read the current file key. For Community distribution, omit `enablePrivatePluginApi`. When the file key is unavailable, paste the current layer's selection link once per plugin run. Later instructions use the layer selected when you send. Reconnect with the same credential to recover your tasks. The gateway determines whether the executor simulates an edit or changes a file.
 
 ```text
 Figma plugin UI

@@ -21,7 +21,7 @@ test('client IDs remain distinct UUIDs in plugin frames without randomUUID', asy
 
 test('a submitted task retains the explicitly bound file and selected node across selection changes and retries',async()=>{
   const selected=['1:2'];
-  const target=selectionTarget('https://www.figma.com/design/Aaa/design?node-id=1-2',selected);
+  const target=selectionTarget('Aaa',selected);
   selected[0]='3:4';
   const sent=[];
   const api=new GatewayClient('synthetic',async(url,request)=>{
@@ -32,7 +32,18 @@ test('a submitted task retains the explicitly bound file and selected node acros
   await api.submit(input); await api.submit(input);
   assert.deepEqual(sent,[input,input]);
   assert.deepEqual(sent[0].target,{fileKey:'Aaa',nodeIds:['1:2']});
-  assert.throws(()=>selectionTarget('https://www.figma.com/design/Aaa/?node-id=1-2',selected));
+  assert.deepEqual(selectionTarget('Aaa', selected), {fileKey:'Aaa',nodeIds:['3:4']});
+  assert.throws(()=>selectionTarget('Aaa', []));
+  assert.throws(()=>selectionTarget('Aaa', ['1:2','3:4']));
+});
+test('a manual file binding requires a link matching the initial selection only',()=>{
+  const link = 'https://www.figma.com/design/Aaa/design?node-id=1-2';
+  const bound = selectionTarget('', ['1:2'], link);
+  assert.equal(bound.fileKey, 'Aaa');
+  assert.deepEqual(selectionTarget(bound.fileKey, ['3:4']), {fileKey:'Aaa',nodeIds:['3:4']});
+  assert.throws(()=>selectionTarget('', ['3:4'], link));
+  assert.throws(()=>selectionTarget('', ['1:2'], 'https://example.com/design/Aaa/?node-id=1-2'));
+  assert.equal(selectionTarget('', ['1:2'], 'https://www.figma.com/design/Main/branch/Branch/file?node-id=1-2').fileKey, 'Branch');
 });
 test('replayed progress events produce a single terminal state; authentication and access errors are distinct',async()=>{
   const events=[{seq:2,status:'running',detail:''},{seq:3,status:'completed',detail:'Ready'}];

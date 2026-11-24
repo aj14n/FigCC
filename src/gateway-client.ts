@@ -6,16 +6,28 @@ export type GatewayStatus = 'queued'|'running'|'completed'|'failed'|'cancelled'|
 export type GatewayTask = {id: string; sessionId: string; status: GatewayStatus; detail: string; target: GatewayTarget; prompt: string};
 export type GatewayEvent = {seq: number; status: GatewayStatus; detail: string};
 
-export function selectionTarget(link: string, selected: readonly string[]): GatewayTarget {
-  const url = new URL(link);
-  const match = /^\/(?:design|file)\/([A-Za-z0-9]+)(?:\/|$)/.exec(url.pathname);
-  const nodeId = (url.searchParams.get('node-id') ?? '').replace(/^(\d+)-(\d+)$/, '$1:$2');
-  if (url.protocol !== 'https:' || !['figma.com','www.figma.com'].includes(url.host) ||
-      url.username || url.password || !match || !/^\d+:\d+$/.test(nodeId)) {
-    throw new Error('请粘贴 Figma 的「复制选区链接」。');
+export function selectionTarget(fileKey: string, selected: readonly string[], bindingLink = ''): GatewayTarget {
+  if (selected.length !== 1) throw new Error('请在画布中选中一个图层。');
+  const nodeId = selected[0];
+  if (!/^\d+:\d+$/.test(nodeId)) throw new Error('当前网关暂不支持这个图层 ID，请选中外层组件或画框。');
+  if (!fileKey) {
+    let url: URL;
+    try {
+      url = new URL(bindingLink);
+    } catch {
+      throw new Error('请用当前图层的 Figma 选区链接绑定文件。');
+    }
+    const match = /^\/(?:design|file)\/([A-Za-z0-9]+)(?:\/branch\/([A-Za-z0-9]+))?(?:\/|$)/.exec(url.pathname);
+    if (url.protocol !== 'https:' || !['figma.com','www.figma.com'].includes(url.host) || url.username || url.password || !match) {
+      throw new Error('请粘贴 Figma 的「复制选区链接」。');
+    }
+    if (url.searchParams.get('node-id')?.replace(/^(\d+)-(\d+)$/, '$1:$2') !== nodeId) {
+      throw new Error('链接与当前选区不一致，请复制当前图层的链接。');
+    }
+    fileKey = match[2] || match[1];
   }
-  if (selected.length !== 1 || selected[0] !== nodeId) throw new Error('请选中链接对应的单个图层，再发送任务。');
-  return {fileKey: match[1], nodeIds: [nodeId]};
+  if (!/^[A-Za-z0-9]{1,128}$/.test(fileKey)) throw new Error('无法识别当前 Figma 文件。');
+  return {fileKey, nodeIds: [nodeId]};
 }
 export class GatewayClient {
   private token: string;

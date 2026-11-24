@@ -38,6 +38,7 @@
   };
   export type SelectionContext = {
     revision: number;
+    fileKey?: string;
     pageId: string;
     pageName: string;
     total: number;

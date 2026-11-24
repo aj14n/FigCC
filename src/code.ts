@@ -263,6 +263,7 @@ type SelectionContextNodePayload = {
 
 type SelectionContextPayload = {
   revision: number;
+  fileKey?: string;
   pageId: string;
   pageName: string;
   total: number;
@@ -272,6 +273,15 @@ type SelectionContextPayload = {
 
 let selectionRevision = 0;
 let selectionTimer: ReturnType<typeof setTimeout> | null = null;
+
+// Public distributions can run without the private plugin API.
+function currentFileKey(): string | undefined {
+  try {
+    return figma.fileKey;
+  } catch {
+    return undefined;
+  }
+}
 
 function roundNumber(value: number): number {
   return Math.round(value * 100) / 100;
@@ -356,7 +366,9 @@ function selectionNodePayload(node: SceneNode): SelectionContextNodePayload {
 }
 
 async function buildSelectionContext(revision: number): Promise<SelectionContextPayload> {
-  const selected = [...figma.currentPage.selection];
+  const page = figma.currentPage;
+  const selected = [...page.selection];
+  const fileKey = currentFileKey();
   const limited = selected.slice(0, MAX_SELECTION_NODES);
   const nodes = limited.map(selectionNodePayload);
   let previewCount = 0;
@@ -384,8 +396,9 @@ async function buildSelectionContext(revision: number): Promise<SelectionContext
 
   return {
     revision,
-    pageId: figma.currentPage.id,
-    pageName: figma.currentPage.name,
+    ...(fileKey ? { fileKey } : {}),
+    pageId: page.id,
+    pageName: page.name,
     total: selected.length,
     truncated: selected.length > limited.length,
     nodes,

@@ -134,6 +134,7 @@
   let attachedImages = $state<AttachedImage[]>([]);
   let attachedFiles = $state<AttachedFile[]>([]);
   let selectionContext = $state<SelectionContext | null>(null);
+  let manuallyBoundFile = $state('');
   let selectionExcluded = $state(false);
   let activeSelectionContext = $derived(
     selectionContext && !selectionExcluded ? selectionContext : null
@@ -1334,7 +1335,8 @@
       const fresh = context && Array.isArray(context.nodes) && context.nodes.length > 0
         ? context
         : null;
-      selectionContext = fresh;
+      // A newer live selection can arrive while the requested preview is exporting.
+      // Resolve the submitted snapshot; selection-context updates the visible target.
       pending.resolve(fresh);
       return;
     }
@@ -1380,7 +1382,7 @@
       onClearWorkspace={clearWorkspace}
     />
   {:else if activeTab === 'tasks'}
-    <GatewayTasks selection={activeSelectionContext} capture={() => requestFreshSelectionContext(false)} />
+    <GatewayTasks selection={selectionContext} bind:manuallyBoundFile capture={() => requestFreshSelectionContext(false)} />
   {:else if activeTab === 'skills'}
     <Skills
       skills={allSkills}
