@@ -12,7 +12,7 @@ test('a submitted task retains the explicitly bound file and selected node acros
   selected[0]='3:4';
   const sent=[];
   const api=new GatewayClient('synthetic',async(url,request)=>{
-    assert.equal(url,'http://127.0.0.1:4320/v1/tasks');
+    assert.equal(url,'http://localhost:4320/v1/tasks');
     sent.push(JSON.parse(request.body)); return Response.json({id:'task'});
   });
   const input={requestId:'one',prompt:'Update label',target};

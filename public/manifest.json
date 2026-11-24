@@ -10,7 +10,7 @@
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": ["https://raw.githubusercontent.com"],
-    "devAllowedDomains": ["ws://localhost:4319", "http://127.0.0.1:4320"],
-    "reasoning": "FigCC connects to a loopback-only AI bridge and fetches the allowlisted Figma Plugin API snapshot."
+    "devAllowedDomains": ["ws://localhost:4319", "http://localhost:4320"],
+    "reasoning": "FigCC uses localhost for the development bridge and task gateway, and fetches the allowlisted Figma Plugin API snapshot."
   }
 }

@@ -12,10 +12,10 @@ test('pairing settings send plain provider preferences across the iframe boundar
   assert.match(ui, /type: 'save-settings',\s*settings: \{[^}]*runtimes: \$state\.snapshot\(runtimePreferences\)/);
 });
 
-test('manifest allows only the documentation host and loopback bridge', async () => {
+test('manifest uses the supported localhost hostname for both development services', async () => {
   const manifest = JSON.parse(await readFile(path.join(root, 'public', 'manifest.json'), 'utf8'));
   assert.deepEqual(manifest.networkAccess.allowedDomains, ['https://raw.githubusercontent.com']);
-  assert.deepEqual(manifest.networkAccess.devAllowedDomains, ['ws://localhost:4319', 'http://127.0.0.1:4320']);
+  assert.deepEqual(manifest.networkAccess.devAllowedDomains, ['ws://localhost:4319', 'http://localhost:4320']);
   assert.ok(!JSON.stringify(manifest).includes('*'));
 });
 

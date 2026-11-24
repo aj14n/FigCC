@@ -28,7 +28,7 @@ export class GatewayClient {
     const headers: Record<string,string> = {Authorization:'Bearer ' + this.token};
     if (body) headers['Content-Type'] = 'application/json';
     const send = this.transport;
-    const response = await send('http://127.0.0.1:4320/v1/tasks' + path, {
+    const response = await send('http://localhost:4320/v1/tasks' + path, {
       method, headers, redirect:'error', credentials:'omit', cache:'no-store',
       ...(body ? {body:JSON.stringify(body)} : {})
     });
